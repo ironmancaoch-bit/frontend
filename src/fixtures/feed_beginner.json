@@ -1,0 +1,227 @@
+{
+  "schema_version": "feed-v1",
+  "athlete_id": "syn_beginner",
+  "date": "2026-08-15",
+  "generated_at_utc": "2026-08-15T14:29:16+00:00",
+  "config_version": "7.0.0",
+  "new_athlete": true,
+  "warnings": [
+    {
+      "kind": "scheduled_job_not_running",
+      "text": "🚨 SCHEDULED JOB NOT RUNNING — data_quality has NEVER run — it is expected every 7 days and has no heartbeat at all; email_brief has NEVER run — it is expected every 24 hours and has no heartbeat at all; pull has NEVER run — it is expected every 24 hours and has no heartbeat at all. The numbers below are not being refreshed. This is a broken schedule, not old data."
+    },
+    {
+      "kind": "data_freshness",
+      "text": "⚠️ Data freshness unknown — pull has never recorded a heartbeat. Treat the below with suspicion."
+    },
+    {
+      "kind": "missing_days",
+      "text": "⚠️ 5 day(s) in the last 90 have no wellness record (limit 3). CTL/ATL assume zero load on: 2026-08-10, 2026-08-11, 2026-08-12, 2026-08-13, 2026-08-14. If you trained on any of those, Fitness and Fatigue are both understated until the device syncs."
+    }
+  ],
+  "today": {
+    "source": "starter",
+    "source_meaning": "no plan exists for this day",
+    "rest_day": true,
+    "sessions": []
+  },
+  "recovery": {
+    "flags": [],
+    "worth_a_look": [],
+    "summary": "No red flags today — normal recovery routine: hydrate, stretch, aim for 7-9h sleep."
+  },
+  "headline": {
+    "as_of_date": "2026-08-14",
+    "ctl": 0.0,
+    "atl": 0.0,
+    "form": 0.0,
+    "run_training_age_weeks": 0.7,
+    "run_acwr": null,
+    "reason": null
+  },
+  "sleep": {
+    "date": "2026-08-15",
+    "secs": null,
+    "score": null,
+    "baseline_secs": 28473.0,
+    "nights_in_baseline": 1,
+    "text": "Sleep last night: no reading synced from the watch."
+  },
+  "yesterday": {
+    "date": "2026-08-14",
+    "synced": false,
+    "load": 0.0,
+    "form": 0.0,
+    "form_change": 0.0,
+    "sessions": [],
+    "read": null
+  },
+  "week": {
+    "week_start": "2026-08-10",
+    "is_first_day": false,
+    "sessions": 0,
+    "moving_secs": 0,
+    "load": 0.0,
+    "by_discipline": {},
+    "trained_last_7": 0,
+    "expected_per_week": 0.0,
+    "gap_streak": 6,
+    "behind_schedule": false
+  },
+  "watch": {
+    "items": [
+      {
+        "name": "strength_adherence",
+        "label": "Whether strength work is keeping pace",
+        "confidence": "LOW",
+        "degraded": false,
+        "note": "early data — treat as a hint",
+        "text": "0 strength session(s) logged in 5 days (0.00/week) against an intended 2/week."
+      }
+    ],
+    "held_back": 0
+  },
+  "figures": [
+    {
+      "key": "easy_zone",
+      "label": "What 'easy' means in bpm",
+      "tier": "general",
+      "unlocked_by": "an LT1 talk-test field test",
+      "why_no_general_fallback": null,
+      "degraded": false,
+      "degraded_reason": null,
+      "evidence": null
+    },
+    {
+      "key": "intensity_target",
+      "label": "Your easy/moderate/hard target split",
+      "tier": "general",
+      "unlocked_by": "nothing — targets are general by design; the phase comes from [season.phase]",
+      "why_no_general_fallback": null,
+      "degraded": false,
+      "degraded_reason": null,
+      "evidence": null
+    },
+    {
+      "key": "ramp_budget",
+      "label": "How much you may increase training next week",
+      "tier": "general",
+      "unlocked_by": "nothing — the caps are population physiology",
+      "why_no_general_fallback": null,
+      "degraded": false,
+      "degraded_reason": null,
+      "evidence": null
+    },
+    {
+      "key": "strength_guidance",
+      "label": "How often to lift, and why",
+      "tier": "general",
+      "unlocked_by": "logging strength sessions ([tracking.strength])",
+      "why_no_general_fallback": null,
+      "degraded": false,
+      "degraded_reason": null,
+      "evidence": null
+    },
+    {
+      "key": "data_quality",
+      "label": "How much your numbers can be trusted",
+      "tier": "personal",
+      "unlocked_by": "nothing — it measures the data, not you",
+      "why_no_general_fallback": null,
+      "degraded": false,
+      "degraded_reason": null,
+      "evidence": null
+    },
+    {
+      "key": "adherence",
+      "label": "Whether you are hitting your planned frequency",
+      "tier": "general",
+      "unlocked_by": "nothing — expectations come from config",
+      "why_no_general_fallback": null,
+      "degraded": false,
+      "degraded_reason": null,
+      "evidence": null
+    },
+    {
+      "key": "training_age",
+      "label": "How long each discipline has been loaded",
+      "tier": "personal",
+      "unlocked_by": "nothing — comes from [training_start]",
+      "why_no_general_fallback": null,
+      "degraded": false,
+      "degraded_reason": null,
+      "evidence": null
+    },
+    {
+      "key": "fitness_form",
+      "label": "Fitness, Fatigue and Form (CTL/ATL/Form)",
+      "tier": "unavailable",
+      "unlocked_by": "training and logging it — roughly 6 weeks for a meaningful CTL",
+      "why_no_general_fallback": "Zero is the CORRECT value for someone who has not trained, not a gap. Estimating fitness nobody has built is the most dangerous number here.",
+      "degraded": false,
+      "degraded_reason": null,
+      "evidence": null
+    },
+    {
+      "key": "easy_session_check",
+      "label": "Whether your easy sessions were actually easy",
+      "tier": "unavailable",
+      "unlocked_by": "an LT1 test AND naming your sessions by intent",
+      "why_no_general_fallback": "Renders a verdict on real sessions. Against an estimated LT1 the FAILED list would be indistinguishable from a real one.",
+      "degraded": false,
+      "degraded_reason": null,
+      "evidence": "easy_session_failures"
+    },
+    {
+      "key": "session_quality",
+      "label": "Whether you did what was prescribed",
+      "tier": "unavailable",
+      "unlocked_by": "a planned block being uploaded (Phase 10)",
+      "why_no_general_fallback": "A plan derived from the outcome is a metric that cannot fail.",
+      "degraded": false,
+      "degraded_reason": null,
+      "evidence": "session_quality"
+    },
+    {
+      "key": "threshold_staleness",
+      "label": "Whether your threshold has moved",
+      "tier": "unavailable",
+      "unlocked_by": "a measured threshold to compare against",
+      "why_no_general_fallback": "'Retest your threshold' based on an estimated threshold would fire constantly and wrongly, and trains you to ignore retest prompts.",
+      "degraded": false,
+      "degraded_reason": null,
+      "evidence": "threshold_staleness"
+    },
+    {
+      "key": "hrv_baseline",
+      "label": "Whether today's HRV is unusual for you",
+      "tier": "personal",
+      "unlocked_by": "about 30 days of morning HRV readings",
+      "why_no_general_fallback": "HRV is intensely individual. A population baseline would flag healthy athletes as suppressed.",
+      "degraded": false,
+      "degraded_reason": null,
+      "evidence": null
+    },
+    {
+      "key": "load_ratio",
+      "label": "Whether recent load has jumped ahead of your baseline",
+      "tier": "unavailable",
+      "unlocked_by": "28 days of logged training",
+      "why_no_general_fallback": "A ratio of actual load to actual load. With no load there is no ratio — undefined, not unknown.",
+      "degraded": false,
+      "degraded_reason": null,
+      "evidence": "load_ratio_run"
+    },
+    {
+      "key": "intensity_actual",
+      "label": "How your time actually split across zones",
+      "tier": "unavailable",
+      "unlocked_by": "logged sessions with heart-rate data",
+      "why_no_general_fallback": "Describes what you did. With nothing done there is nothing to describe. The TARGET is general; the ACTUAL never can be.",
+      "degraded": false,
+      "degraded_reason": null,
+      "evidence": "time_in_zone_combined"
+    }
+  ],
+  "next_unlock": "an LT1 talk-test field test — unlocks what 'easy' means in bpm"
+}
