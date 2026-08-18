@@ -1,8 +1,8 @@
 {
   "schema_version": "feed-v1",
   "athlete_id": "syn_veteran",
-  "date": "2026-08-15",
-  "generated_at_utc": "2026-08-15T14:29:19+00:00",
+  "date": "2026-08-18",
+  "generated_at_utc": "2026-08-18T18:49:43+00:00",
   "config_version": "7.0.0",
   "new_athlete": false,
   "warnings": [
@@ -16,7 +16,7 @@
     },
     {
       "kind": "missing_days",
-      "text": "⚠️ 5 day(s) in the last 90 have no wellness record (limit 3). CTL/ATL assume zero load on: 2026-08-10, 2026-08-11, 2026-08-12, 2026-08-13, 2026-08-14. If you trained on any of those, Fitness and Fatigue are both understated until the device syncs."
+      "text": "⚠️ 8 day(s) in the last 90 have no wellness record (limit 3). CTL/ATL assume zero load on: 2026-08-10, 2026-08-11, 2026-08-12, 2026-08-13, 2026-08-14, 2026-08-15, 2026-08-16, 2026-08-17. If you trained on any of those, Fitness and Fatigue are both understated until the device syncs."
     }
   ],
   "today": {
@@ -31,41 +31,41 @@
     "summary": "No red flags today — normal recovery routine: hydrate, stretch, aim for 7-9h sleep."
   },
   "headline": {
-    "as_of_date": "2026-08-14",
-    "ctl": 77.0,
-    "atl": 41.8,
-    "form": 35.2,
-    "run_training_age_weeks": 29.3,
-    "run_acwr": 0.58,
+    "as_of_date": "2026-08-17",
+    "ctl": 71.7,
+    "atl": 26.3,
+    "form": 45.4,
+    "run_training_age_weeks": 29.7,
+    "run_acwr": 0.39,
     "reason": null
   },
   "sleep": {
-    "date": "2026-08-15",
+    "date": "2026-08-18",
     "secs": null,
     "score": null,
-    "baseline_secs": 25994.08,
-    "nights_in_baseline": 25,
+    "baseline_secs": 26237.81818181818,
+    "nights_in_baseline": 22,
     "text": "Sleep last night: no reading synced from the watch."
   },
   "yesterday": {
-    "date": "2026-08-14",
+    "date": "2026-08-17",
     "synced": false,
     "load": 0.0,
-    "form": 35.24931751278464,
-    "form_change": 5.086649155592781,
+    "form": 45.35114136297615,
+    "form_change": 2.6385391464972088,
     "sessions": [],
     "read": null
   },
   "week": {
-    "week_start": "2026-08-10",
+    "week_start": "2026-08-17",
     "is_first_day": false,
     "sessions": 0,
     "moving_secs": 0,
     "load": 0.0,
     "by_discipline": {},
-    "trained_last_7": 2,
-    "expected_per_week": 6.694174757281553,
-    "gap_streak": 5,
+    "trained_last_7": 0,
+    "expected_per_week": 6.598086124401914,
+    "gap_streak": 8,
     "behind_schedule": true
   },
   "watch": {
@@ -87,7 +87,7 @@
         "text": "Combined intensity distribution, 3-zone model anchored to LT1_LT2, BY TIME: 97.7% below LT2, 2.3% above LT2, over 273 sessions and 286.5 hours. Z1 and Z2 are MERGED because LT1 is UNKNOWN for swim (13% of the time here) and 13% of the time here is in sessions that have no LT1 at all — strength or untyped work, where the threshold does not exist to be measured — the boundary between them IS LT1. DEGRADED FIGURE. Without LT1 this is a two-way split, and the below-LT2 share combines genuinely easy work with sub-threshold work. Those two have opposite training meanings, so this number cannot be compared with the Z1 target. The above-LT2 share is exact. This COMBINED figure covers every discipline at once, so a single unmeasured LT1 merges all of it. The full three-way split IS available for bike, run and is reported separately per discipline."
       }
     ],
-    "held_back": 6
+    "held_back": 4
   },
   "figures": [
     {

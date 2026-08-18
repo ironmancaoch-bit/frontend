@@ -1,8 +1,8 @@
 {
   "schema_version": "feed-v1",
   "athlete_id": "syn_beginner",
-  "date": "2026-08-15",
-  "generated_at_utc": "2026-08-15T14:29:16+00:00",
+  "date": "2026-08-18",
+  "generated_at_utc": "2026-08-18T18:49:41+00:00",
   "config_version": "7.0.0",
   "new_athlete": true,
   "warnings": [
@@ -16,14 +16,29 @@
     },
     {
       "kind": "missing_days",
-      "text": "⚠️ 5 day(s) in the last 90 have no wellness record (limit 3). CTL/ATL assume zero load on: 2026-08-10, 2026-08-11, 2026-08-12, 2026-08-13, 2026-08-14. If you trained on any of those, Fitness and Fatigue are both understated until the device syncs."
+      "text": "⚠️ 8 day(s) in the last 90 have no wellness record (limit 3). CTL/ATL assume zero load on: 2026-08-10, 2026-08-11, 2026-08-12, 2026-08-13, 2026-08-14, 2026-08-15, 2026-08-16, 2026-08-17. If you trained on any of those, Fitness and Fatigue are both understated until the device syncs."
     }
   ],
   "today": {
     "source": "starter",
-    "source_meaning": "no plan exists for this day",
-    "rest_day": true,
-    "sessions": []
+    "source_meaning": "the GENERAL starter week, built from the athlete's stated training frequency — not from their data",
+    "rest_day": false,
+    "sessions": [
+      {
+        "name": "Easy Run",
+        "type": "Run",
+        "duration_min": 20,
+        "objective": "Aerobic base / frequency — low-stress volume that doesn't outrun joint adaptation.",
+        "fuelling": "Normal hydration is enough for a session this short — no extra carbs needed."
+      },
+      {
+        "name": "Easy Strength",
+        "type": "Strength",
+        "duration_min": 30,
+        "objective": "Durability work — closing the bike/run tissue-adaptation gap.",
+        "fuelling": "Normal hydration is enough for a session this short — no extra carbs needed."
+      }
+    ]
   },
   "recovery": {
     "flags": [],
@@ -31,16 +46,16 @@
     "summary": "No red flags today — normal recovery routine: hydrate, stretch, aim for 7-9h sleep."
   },
   "headline": {
-    "as_of_date": "2026-08-14",
+    "as_of_date": "2026-08-17",
     "ctl": 0.0,
     "atl": 0.0,
     "form": 0.0,
-    "run_training_age_weeks": 0.7,
+    "run_training_age_weeks": 1.1,
     "run_acwr": null,
     "reason": null
   },
   "sleep": {
-    "date": "2026-08-15",
+    "date": "2026-08-18",
     "secs": null,
     "score": null,
     "baseline_secs": 28473.0,
@@ -48,7 +63,7 @@
     "text": "Sleep last night: no reading synced from the watch."
   },
   "yesterday": {
-    "date": "2026-08-14",
+    "date": "2026-08-17",
     "synced": false,
     "load": 0.0,
     "form": 0.0,
@@ -57,7 +72,7 @@
     "read": null
   },
   "week": {
-    "week_start": "2026-08-10",
+    "week_start": "2026-08-17",
     "is_first_day": false,
     "sessions": 0,
     "moving_secs": 0,
@@ -65,18 +80,26 @@
     "by_discipline": {},
     "trained_last_7": 0,
     "expected_per_week": 0.0,
-    "gap_streak": 6,
+    "gap_streak": 9,
     "behind_schedule": false
   },
   "watch": {
     "items": [
+      {
+        "name": "weekly_load_run",
+        "label": "This week's run load, in absolute terms",
+        "confidence": "HIGH",
+        "degraded": false,
+        "note": "solid data behind it",
+        "text": "Run load over the last 7 complete days is 0 units. A ratio means nothing without this: 1.2 at 200/week and 1.2 at 700/week are different situations."
+      },
       {
         "name": "strength_adherence",
         "label": "Whether strength work is keeping pace",
         "confidence": "LOW",
         "degraded": false,
         "note": "early data — treat as a hint",
-        "text": "0 strength session(s) logged in 5 days (0.00/week) against an intended 2/week."
+        "text": "0 strength session(s) logged in 8 days (0.00/week) against an intended 2/week."
       }
     ],
     "held_back": 0
