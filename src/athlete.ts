@@ -62,9 +62,24 @@ export type FetchResult =
  *   3. never invent a value for a field the response omitted.
  */
 export async function fetchBriefing(
+  /**
+   * Wessen Briefing. Die echte Umsetzung reicht das an die Engine durch —
+   * sie wählt damit die Datenpartition. Heute wird es NICHT ausgewertet,
+   * weil eine Testdatei zurückkommt; die Signatur steht trotzdem schon, damit
+   * am Mac-Tag nur der Rumpf getauscht wird und kein Aufrufer.
+   *
+   * Nie leer lassen: ohne Id fällt die Engine auf `default` zurück.
+   */
+  athleteId: string,
+  /** Ein bestimmter Tag, sonst der heutige in der Zeitzone des Athleten. */
+  date?: string,
   which: TestAthlete = DEFAULT_ATHLETE,
 ): Promise<FetchResult> {
   try {
+    if (!athleteId) {
+      return { ok: false, error: 'Keine Athleten-Kennung — die Engine würde auf "default" zurückfallen.' };
+    }
+    void date;
     const feed = testAthletes[which];
     if (feed.schema_version !== 'feed-v1') {
       return {

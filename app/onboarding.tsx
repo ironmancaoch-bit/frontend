@@ -39,6 +39,8 @@ import {
   SEASON_LABEL,
   SEASON_PHASE,
   defaultIntake,
+  isValidAthleteId,
+  newAthleteId,
   type Discipline,
   type Experience,
   type Intake,
@@ -48,7 +50,7 @@ import { useSession } from '../src/session';
 import { saveIntake } from '../src/storage';
 import { c, t } from '../src/theme';
 
-const TOTAL = 6;
+const TOTAL = 7;
 const today = () => new Date().toISOString().slice(0, 10);
 
 // ------------------------------------------------------------- controls
@@ -177,8 +179,12 @@ export default function Onboarding() {
     if (saving) return;
     setSaving(true);
     const now = new Date().toISOString();
+    // Die Id wird ein Verzeichnisname in der Engine. Lieber hier neu
+    // erzeugen als eine ungültige speichern, die erst dort auffällt.
+    const id = isValidAthleteId(intake.athleteId) ? intake.athleteId : newAthleteId();
     const complete: Intake = {
       ...intake,
+      athleteId: id,
       completedAt: now,
       consentAt: intake.consentGiven ? now : null,
     };
@@ -434,6 +440,70 @@ export default function Onboarding() {
 
         {step === 4 ? (
           <>
+            <Text style={s.h}>Wie du gecoacht werden willst</Text>
+            <Text style={t.body}>
+              Drei Fragen, die nur dich betreffen. Sie standen früher in einer
+              gemeinsamen Datei — dort galt die Antwort eines Athleten für
+              alle. Das ist keine Trainingslehre, sondern deine Vorliebe.
+            </Text>
+            <Text style={[t.hint, { marginTop: 8 }]}>
+              Alles freiwillig. Leer heißt leer und wird nicht durch einen
+              Standardtext ersetzt.
+            </Text>
+
+            <Field
+              label="Regeln, die du mit dir selbst vereinbart hast"
+              hint="Unverhandelbares, in deinen Worten. Zum Beispiel „die Prüfung gewinnt immer“, „keine Lauf-Serien“, „ein voller Ruhetag pro Woche“."
+            >
+              <TextInput
+                style={[s.input, s.area]}
+                value={intake.ownRules}
+                onChangeText={(v) => set('ownRules', v)}
+                multiline
+                placeholder="optional"
+                placeholderTextColor={c.dim}
+              />
+            </Field>
+
+            <Field
+              label="Tonfall"
+              hint="Direkt und schonungslos oder ermutigend? Soll ungefragt gemeldet werden oder nur auf Nachfrage? Wie viel Struktur willst du, und wie sehr darf ein Plan nach einer schlechten Woche nachgeben?"
+            >
+              <TextInput
+                style={[s.input, s.area]}
+                value={intake.coachingStyle}
+                onChangeText={(v) => set('coachingStyle', v)}
+                multiline
+                placeholder="optional"
+                placeholderTextColor={c.dim}
+              />
+            </Field>
+
+            <Field
+              label="Was für dich persönlich gilt"
+              hint="Welche Sportart hältst du nur, statt sie zu entwickeln? Was begrenzt dich — Ausdauer, Gewebe, Zeit, etwas anderes? Welche feste Verpflichtung schlägt Training? Und was ist deine realistische Wochendecke, nicht die einer guten Woche?"
+            >
+              <TextInput
+                style={[s.input, s.area]}
+                value={intake.personalPrinciples}
+                onChangeText={(v) => set('personalPrinciples', v)}
+                multiline
+                placeholder="optional"
+                placeholderTextColor={c.dim}
+              />
+            </Field>
+
+            <View style={s.note}>
+              <Text style={t.hint}>
+                Diese Antworten schlagen die allgemeinen Grundsätze, wenn beide
+                sich widersprechen — und sie werden nur für dich gelesen.
+              </Text>
+            </View>
+          </>
+        ) : null}
+
+        {step === 5 ? (
+          <>
             <Text style={s.h}>Was noch fehlt</Text>
             <Text style={t.body}>
               Dreizehn Messwerte stehen auf unbekannt, und das bleibt so, bis
@@ -466,7 +536,7 @@ export default function Onboarding() {
           </>
         ) : null}
 
-        {step === 5 ? (
+        {step === 6 ? (
           <>
             <Text style={s.h}>Einwilligung</Text>
             <Text style={t.body}>
@@ -501,9 +571,22 @@ export default function Onboarding() {
             <View style={s.note}>
               <Text style={s.noteTitle}>Verbindung zu intervals.icu</Text>
               <Text style={t.hint}>
-                Wird hier nicht abgefragt. Dein API-Schlüssel gehört in die
-                Konfiguration auf dem Rechner, auf dem die Engine läuft — diese
-                App fasst keine Zugangsdaten an.
+                Wird hier nicht abgefragt. Dein API-Schlüssel gehört in den
+                Schlüsselbund des Geräts — diese App fasst keine Zugangsdaten
+                an. Unter welchem Namen er hinterlegt wird, hängt an deiner
+                Kennung unten.
+              </Text>
+            </View>
+
+            <View style={s.note}>
+              <Text style={s.noteTitle}>Deine Kennung auf diesem Gerät</Text>
+              <Text style={s.mono}>{intake.athleteId}</Text>
+              <Text style={t.hint}>
+                Wird jetzt erzeugt und bleibt. Sie ist der Ordnername deiner
+                Daten. Ohne eigene Kennung würde die Engine still auf
+                „default“ zurückfallen — unauffällig auf einem Gerät, aber
+                beim Wiederherstellen auf einem zweiten Telefon würden zwei
+                Personen in denselben Ordner schreiben.
               </Text>
             </View>
           </>
@@ -567,6 +650,13 @@ const s = StyleSheet.create({
     marginTop: 2,
   },
   hoursRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  area: { minHeight: 84, textAlignVertical: 'top' },
+  mono: {
+    color: c.accentText,
+    fontSize: 13,
+    fontVariant: ['tabular-nums'],
+    marginVertical: 2,
+  },
 
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: 4 },
   chip: {

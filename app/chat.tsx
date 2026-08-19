@@ -34,6 +34,7 @@ import {
 
 import { fetchBriefing } from '../src/athlete';
 import type { Feed } from '../src/feed';
+import { useSession } from '../src/session';
 import {
   INTENT_LABEL,
   REFERRAL_TEXT,
@@ -124,6 +125,7 @@ function Scale({
 }
 
 export default function Chat() {
+  const { intake } = useSession();
   const [feed, setFeed] = useState<Feed | null>(null);
   const [state, setState] = useState<BriefingState | null>(null);
   const [outbox, setOutbox] = useState<OutboxItem[]>([]);
@@ -148,8 +150,9 @@ export default function Chat() {
   const [workout, setWorkout] = useState('');
 
   const pull = useCallback(async () => {
+    if (!intake) return;
     setBusy(true);
-    const result = await fetchBriefing();
+    const result = await fetchBriefing(intake.athleteId);
     if (result.ok) {
       setFeed(result.feed);
       await archiveFeed(result.feed);
@@ -165,7 +168,7 @@ export default function Chat() {
       setError(result.error);
     }
     setBusy(false);
-  }, []);
+  }, [intake]);
 
   useEffect(() => {
     loadOutbox().then(setOutbox);

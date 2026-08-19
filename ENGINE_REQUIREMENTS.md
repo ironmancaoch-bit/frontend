@@ -145,13 +145,20 @@ Sie erzeugt `toConfigPayload()` aus `src/intake.ts`:
 
 ```json
 {
-  "schema": "intake-v1",
-  "completed_at": "2026-08-15T18:00:00.000Z",
-  "consent": { "given": true, "at": "2026-08-15T18:00:00.000Z" },
-  "profile": { "hours_per_week_low": 8, "hours_per_week_high": 10 },
+  "schema": "intake-v2",
+  "athlete_id": "a-mfk3p2x-1q8w",
+  "completed_at": "2026-08-19T06:00:00.000Z",
+  "consent": { "given": true, "at": "2026-08-19T06:00:00.000Z" },
+  "profile": {
+    "hours_per_week_low": 8,
+    "hours_per_week_high": 10,
+    "own_rules": "Die Prüfung gewinnt immer. Ein voller Ruhetag pro Woche.",
+    "coaching_style": "Direkt. Ungefragt melden, wenn etwas auffällt.",
+    "personal_principles": "Schwimmen halte ich nur. Zeit limitiert, nicht die Ausdauer."
+  },
   "config": [
     { "key": "athlete.timezone", "value": "Europe/Berlin",
-      "unit": "IANA timezone name", "source": "athlete intake 2026-08-15" },
+      "unit": "IANA timezone name", "source": "athlete intake 2026-08-19" },
     { "key": "intake.age", "value": "UNKNOWN",
       "unit": "years", "source": "new-athlete template — replace when a real value exists" }
   ]
@@ -160,12 +167,29 @@ Sie erzeugt `toConfigPayload()` aus `src/intake.ts`:
 
 Was die Engine dafür braucht:
 
+- **`athlete_id` als Partitionsnamen übernehmen.** Neu in v2. Die App erzeugt
+  eine eigene Kennung (`a-<zeit>-<zufall>`, gültig nach
+  `paths.validate_athlete_id`) und **niemals `default`**. Grund:
+  `paths.for_athlete(None)` und `json_store.for_athlete(None)` fallen sonst
+  still auf `default` zurück — unauffällig bei einem Athleten, ein Datenmischer
+  beim Wiederherstellen auf ein zweites Gerät. Folge für die Zugangsdaten: der
+  Schlüssel heißt `INTERVALS_API_KEY_<ID>`, nicht bar.
 - Einen Weg, dieses Dokument in ein `athlete_config.toml` zu schreiben. Die
   Schlüssel passen bereits 1:1; `source` unterscheidet eine echte Antwort von
   einer stehengelassenen Vorgabe, und das darf nicht verlorengehen.
+- **Die drei Prosa-Abschnitte in `profile.md` schreiben.** Ebenfalls neu in v2:
+  `own_rules` → „The rules you have agreed with yourself", `coaching_style` →
+  „How you want to be coached", `personal_principles` → „Principles specific to
+  you". Sie wurden mit D66 aus dem SYSTEM-weiten `coach.md` herausgelöst, das
+  `block_builder.py` für **jeden** Athleten liest — ohne sie gilt für alle
+  dasselbe.
 - Die `profile.hours_per_week_*`-Werte in die `hours/week`-Zeile von
   `profile.md`, weil der Planer genau diese Zeile liest und ohne sie nicht
-  plant.
+  plant. **Diese Funktion existiert nicht** — `new_athlete.py` kopiert nur die
+  Vorlage. Bis dahin bekommt jeder App-Athlet stillschweigend die 18–22 Stunden
+  aus der Vorlage, was Standing Rule 3 verletzt.
+- **Leerer String heißt „nicht beantwortet"** und darf nicht durch den
+  Vorlagentext ersetzt werden. Alle drei Felder sind freiwillig.
 - **Die Einwilligung muss tatsächlich greifen.** Heute führt `roster` ein
   Feld dafür, `roster.active()` filtert aber nur nach Status und Art, und
   `run_daily.py` gibt Probleme auf stderr aus und verarbeitet dann trotzdem
@@ -287,3 +311,49 @@ liest:
   nachgebaut
 - Status-Angaben zu F1, M1, M2, A2 und REACHED_NOT_REPORTED: aus
   `docs/ROADMAP.md` und `docs/metric_versions.md` übernommen, nicht erinnert
+
+---
+
+## 10. Zwei Tests scheitern acht Stunden am Tag
+
+**Gefunden 2026-08-19 gegen `f71ebb5`. Kein App-Thema — gehört der Engine-Seite,
+deshalb hier und nicht als Änderung.**
+
+```
+tests/test_pmc_spine.py:19   TZ = ZoneInfo("Europe/Berlin")
+tests/test_wiring.py:26      TZ = ZoneInfo("Europe/Berlin")
+```
+
+Beide berechnen ihre Erwartung mit diesem festen Berlin:
+
+```python
+expected = (today(TZ) - date.fromisoformat(ctx.config["history"]["anchor_date"])).days + 1
+```
+
+Der Testathlet `syn_veteran` lebt aber in **`America/Denver`**, und
+`compute_ctl_atl_series` baut die Spine in der Zeitzone des **Athleten**.
+
+Zwischen Mitternacht in Berlin und Mitternacht in Denver sind das zwei
+verschiedene Tage. Gemessen um 05:57 Berliner Zeit: erwartet 211, geliefert
+210. Das Fenster ist jeden Tag rund acht Stunden breit — in CI je nach
+Laufzeit mal rot, mal grün.
+
+Der Konfigurationskommentar des Athleten benennt die Absicht selbst:
+
+> *"Deliberately varied across the library — a hardcoded Europe/Berlin would
+> pass every test."*
+
+Genau dafür wurde die Zeitzone variiert. Die beiden Tests umgehen es.
+
+**Behebung:** `ZoneInfo(ctx.config["athlete"]["timezone"])` statt der Konstante
+— oder `ctx.timezone`, wenn der Kontext sie schon trägt. Nicht den Athleten auf
+Berlin umstellen: die Varianz ist der Zweck.
+
+**Nebenbei, beim Herstellen der Umgebung gelernt:** Die Suite braucht den
+Bootstrap-Schritt aus `.github/workflows/ci.yml:61`
+(`python tools/new_athlete.py default --anchor 2026-01-21`). Ohne ihn scheitern
+zusätzlich `test_a_stray_directory_does_not_stop_the_roster` und
+`test_an_unreadable_record_does_not_stop_the_roster` — sie setzen einen REAL
+enrollten `default` voraus. Für jemanden, der die Suite zum ersten Mal auf einer
+neuen Maschine laufen lässt, sieht das nach kaputtem Code aus. Ein Satz in
+`CLAUDE.md` unter „Tests" würde es abfangen.

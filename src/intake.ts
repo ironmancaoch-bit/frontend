@@ -118,8 +118,41 @@ export const HOMEWORK: {
   },
 ];
 
+/**
+ * Die Athleten-Id dieses Geräts.
+ *
+ * WARUM SIE ERZEUGT WIRD UND NICHT WEGGELASSEN. Ohne ausdrückliche Id fällt
+ * die Engine still auf `default` zurück — `paths.for_athlete(None)` und
+ * `json_store.for_athlete(None)` tun genau das. Auf einem Gerät mit einem
+ * Athleten fällt das nie auf. Beim Wiederherstellen eines Backups auf ein
+ * zweites Gerät schreiben dann zwei Personen in dieselbe Partition.
+ *
+ * Zusätzlich hängt die Benennung der Zugangsdaten daran: `config/settings.py`
+ * vergibt den unsuffigierten `INTERVALS_API_KEY` nur an `default`, alle
+ * anderen bekommen `INTERVALS_API_KEY_<ID>`. Eine eigene Id kostet heute
+ * genau diesen Suffix — und sie überlebt die geplante Abschaffung von
+ * `default` (Roadmap A5), die diese Benennungsregel ohnehin ändern wird.
+ *
+ * Format nach `paths.validate_athlete_id`: nur Buchstaben, Ziffern,
+ * Bindestrich, Unterstrich. Die Id wird ein Verzeichnisname.
+ */
+export function newAthleteId(): string {
+  const stamp = Date.now().toString(36);
+  const rand = Math.floor(Math.random() * 1e8).toString(36);
+  return `a-${stamp}-${rand}`;
+}
+
+/** Dieselbe Prüfung wie `paths.validate_athlete_id`, vor dem Speichern. */
+export function isValidAthleteId(id: string): boolean {
+  if (typeof id !== 'string' || id.trim() === '' || id !== id.trim()) return false;
+  if (id === 'default') return false; // der Rückfall, den wir vermeiden
+  return /^[A-Za-z0-9_-]+$/.test(id);
+}
+
 /** Everything the onboarding collects. Mirrors the config sections 1:1. */
 export type Intake = {
+  /** Diese Installation. Erzeugt beim ersten Start, danach unveränderlich. */
+  athleteId: string;
   /** `athlete.timezone` — sets every day boundary. */
   timezone: string;
   /** `history.anchor_date` — when logging becomes trustworthy (D1). */
@@ -152,6 +185,22 @@ export type Intake = {
   hoursPerWeekLow: number | null;
   hoursPerWeekHigh: number | null;
 
+  /**
+   * Die drei Prosa-Abschnitte aus `config/profile.template.md`, die seit D66
+   * dorthin gehören und die das Onboarding bisher nicht erhoben hat.
+   *
+   * Sie wurden aus dem SYSTEM-weiten `coach.md` herausgelöst — dort galt die
+   * Antwort eines Athleten für alle. Leer gelassen bekommt jeder App-Athlet
+   * einen leeren Präferenz- und Limiter-Abschnitt, und die allgemeinen
+   * Grundsätze gelten ungefiltert.
+   *
+   * Freitext, absichtlich. Keine Auswahlliste kann „das Examen gewinnt immer"
+   * abbilden, und das ist genau die Sorte Regel, um die es geht.
+   */
+  ownRules: string;
+  coachingStyle: string;
+  personalPrinciples: string;
+
   /** Consent is REQUIRED and not on record until given (D62). */
   consentGiven: boolean;
   consentAt: string | null;
@@ -163,6 +212,7 @@ export type Intake = {
 /** The engine's own day-one defaults, value for value. */
 export function defaultIntake(today: string): Intake {
   return {
+    athleteId: newAthleteId(),
     timezone: 'Europe/Berlin',
     anchorDate: today,
 
@@ -185,6 +235,10 @@ export function defaultIntake(today: string): Intake {
 
     hoursPerWeekLow: null,
     hoursPerWeekHigh: null,
+
+    ownRules: '',
+    coachingStyle: '',
+    personalPrinciples: '',
 
     consentGiven: false,
     consentAt: null,
@@ -249,12 +303,26 @@ export function toConfigPayload(intake: Intake) {
   }
 
   return {
-    schema: 'intake-v1',
+    schema: 'intake-v2',
+    /** Der Verzeichnisname der Partition. Nie `default`. */
+    athlete_id: intake.athleteId,
     completed_at: intake.completedAt,
     consent: { given: intake.consentGiven, at: intake.consentAt },
+    /**
+     * Die Abschnitte von `profile.md`. Die Engine schreibt bisher nur die
+     * Vorlage (`new_athlete.py` kopiert sie), es gibt keine Funktion, die
+     * diese Antworten einträgt — siehe ENGINE_REQUIREMENTS.md §3.
+     *
+     * Leerer String heißt "nicht beantwortet" und darf NICHT durch einen
+     * Vorgabetext ersetzt werden. Die Vorlage liefert sonst stillschweigend
+     * 18–22 Stunden pro Woche für jeden.
+     */
     profile: {
       hours_per_week_low: intake.hoursPerWeekLow,
       hours_per_week_high: intake.hoursPerWeekHigh,
+      own_rules: intake.ownRules,
+      coaching_style: intake.coachingStyle,
+      personal_principles: intake.personalPrinciples,
     },
     config: rows,
   };

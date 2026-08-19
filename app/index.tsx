@@ -117,7 +117,8 @@ export default function Dashboard() {
   const [showFigures, setShowFigures] = useState(false);
 
   const load = useCallback(async () => {
-    const result = await fetchBriefing();
+    if (!intake) return;
+    const result = await fetchBriefing(intake.athleteId);
     if (!result.ok) {
       setError(result.error);
       return;
@@ -127,7 +128,9 @@ export default function Dashboard() {
     // Keeping every arriving feed is what builds a local time series — the
     // engine's own feed has no history in it.
     setArchive(await archiveFeed(result.feed));
-  }, []);
+    // Auf die Kennung angewiesen: ohne sie wird nicht geladen, statt der
+    // Engine die Wahl der Partition zu überlassen.
+  }, [intake]);
 
   useEffect(() => {
     loadArchive().then(setArchive);
