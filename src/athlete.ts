@@ -46,13 +46,20 @@ export type FetchResult =
 /**
  * Fetch one morning's briefing.
  *
- * WHEN THE ENGINE IS REACHABLE, this becomes an HTTP call for
- * `reports/athletes/<id>/feed_<date>.json` (or whatever the server exposes),
- * and everything downstream — the archive, the coach thread, the dashboard —
- * keeps working unchanged. Three things the real version must do that the
- * stub cannot: check `schema_version` before trusting the shape, keep the
- * last good feed when the network fails, and never invent a value for a
- * field the response omitted.
+ * WHERE THIS IS GOING — corrected 2026-08-19. An earlier version of this
+ * comment said the body "becomes an HTTP call". That describes the
+ * ALTERNATIVE THAT WAS REJECTED. D66 (draft in DECISION_local_first.md)
+ * decided local-first: the engine runs ON the device, embedded as CPython,
+ * and this function will call a native module — not a server. Leaving the
+ * old sentence in would invite someone to build a client for a server that
+ * is never going to exist.
+ *
+ * Three things the real implementation must do that this stub cannot, none
+ * of which need the native module to be written first:
+ *   1. check `schema_version` before trusting the shape (done below),
+ *   2. keep the last good feed when the engine fails — `storage.archiveFeed`
+ *      and `loadArchive` are ready and this function does not use them yet,
+ *   3. never invent a value for a field the response omitted.
  */
 export async function fetchBriefing(
   which: TestAthlete = DEFAULT_ATHLETE,

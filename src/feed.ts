@@ -264,9 +264,21 @@ export interface WatchItem {
 }
 
 export interface Watch {
-  /** At most 2 — the daily alert budget. */
+  /**
+   * USUALLY 2 — but the list can be longer, and the UI must not slice it.
+   *
+   * The daily budget applies to ROUTINE readings only. A BREACH — a reading
+   * that crossed a limit — is never held back: `contract.py` returns
+   * `breaches + routine[:room]`, so a day with three real breaches produces
+   * three lines. The engine's own reasoning: applying the budget to breaches
+   * "does the opposite of its purpose — it makes the brief short by removing
+   * precisely the findings the athlete needed".
+   *
+   * There is no separate `breach` field. When a breach reason would otherwise
+   * be dropped, the engine appends it to `text`.
+   */
   items: WatchItem[];
-  /** Further readings computed but held out of today's budget. */
+  /** Further ROUTINE readings computed but held out of today's budget. */
   held_back: number;
 }
 
